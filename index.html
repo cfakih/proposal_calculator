@@ -263,6 +263,21 @@
             gap: 10px;
         }
 
+        .product-name-editable {
+            width: 100%;
+            border: 2px solid #d7d7d7;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #120044;
+        }
+
+        .product-name-display {
+            font-weight: 600;
+            color: #120044;
+        }
+
         .remove-btn {
             background: #d32f2f;
             color: #ffffff;
@@ -433,6 +448,10 @@
             background: #e6f7e6;
         }
 
+        .managed-services-row {
+            background: #f7f5f2;
+        }
+
         /* Left-align support row content */
         .support-row .price-display {
             text-align: left;
@@ -468,6 +487,44 @@
             flex: 1;
         }
 
+        .dual-pricing-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dual-pricing-section {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .dual-pricing-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: #575757;
+            text-align: center;
+        }
+
+        .dual-pricing-fields {
+            display: flex;
+            gap: 5px;
+        }
+
+        .dual-pricing-fields input {
+            flex: 1;
+            font-size: 12px;
+            padding: 6px 8px;
+        }
+
+        .dual-pricing-fields label {
+            font-size: 10px;
+            color: #575757;
+            min-width: 25px;
+            display: flex;
+            align-items: center;
+        }
+
         /* Hide cells for discount row */
         .discount-row .hidden-cell {
             visibility: hidden;
@@ -487,6 +544,21 @@
 
         .export-container .totals-section {
             margin-top: 20px;
+        }
+
+        .managed-services-input {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .managed-services-prefix {
+            border: 2px solid #d7d7d7;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            min-width: 80px;
         }
 
         @media (max-width: 768px) {
@@ -550,6 +622,7 @@
                         <option value="amplify">Outreach Amplify ($1.20/credit)</option>
                         <option value="listener">Listener Licenses ($10/user/month)</option>
                         <option value="one-time-discount">One-time Discount</option>
+                        <option value="custom-outreach">Custom SKU</option>
                     </select>
                 </div>
                 <div class="dropdown-group">
@@ -561,16 +634,19 @@
                         <option value="voice-europe">Europe Full Standard ($25/user/month)</option>
                         <option value="voice-global">Global Calling Package ($300/org/month)</option>
                         <option value="voice-local">Local Presence USA & Canada ($150/org/month)</option>
+                        <option value="custom-voice">Custom Voice SKU</option>
                     </select>
                 </div>
                 <div class="dropdown-group">
-                    <label for="implementation-dropdown">Implementation Services</label>
+                    <label for="implementation-dropdown">Implementation & Services</label>
                     <select id="implementation-dropdown" class="dropdown">
                         <option value="">Select implementation...</option>
                         <option value="impl-10hr">10hr Quick Start ($2,000)</option>
                         <option value="impl-15hr">15hr Quick Start ($3,600)</option>
                         <option value="impl-full">Full Implementation (Custom)</option>
                         <option value="impl-amplify">Amplify Implementation (Custom)</option>
+                        <option value="managed-services">Custom Managed Services</option>
+                        <option value="custom-implementation">Custom Implementation SKU</option>
                     </select>
                 </div>
             </div>
@@ -641,23 +717,27 @@
 
     <script>
         const products = {
-            'engage': { price: 120, listPrice: 120, type: 'monthly', name: 'Outreach Platform: Engage' },
-            'admin': { price: 120, listPrice: 120, type: 'monthly', name: 'Outreach Admin' },
-            'meet': { price: 60, listPrice: 60, type: 'monthly', name: 'Outreach Meet' },
-            'deal': { price: 25, listPrice: 25, type: 'monthly', name: 'Outreach Deal' },
-            'forecast': { price: 25, listPrice: 25, type: 'monthly', name: 'Outreach Forecast' },
-            'amplify': { price: 1.20, listPrice: 1.20, type: 'onetime', name: 'Outreach Amplify (Credits)', defaultSeats: 10000 },
-            'listener': { price: 10, listPrice: 10, type: 'monthly', name: 'Listener Licenses' },
-            'one-time-discount': { price: 0, listPrice: 0, type: 'onetime', name: 'One-time Discount', isDiscount: true },
-            'voice-standard': { price: 10, listPrice: 10, type: 'monthly', name: 'USA & Canada Standard' },
-            'voice-premium': { price: 20, listPrice: 20, type: 'monthly', name: 'USA & Canada Premium' },
-            'voice-europe': { price: 25, listPrice: 25, type: 'monthly', name: 'Europe Full Standard' },
-            'voice-global': { price: 300, listPrice: 300, type: 'monthly', name: 'Global Calling Package' },
-            'voice-local': { price: 150, listPrice: 150, type: 'monthly', name: 'Local Presence USA & Canada' },
-            'impl-10hr': { price: 2000, listPrice: 2000, type: 'onetime', name: '10hr Quick Start (One-Time Fee)' },
-            'impl-15hr': { price: 3600, listPrice: 3600, type: 'onetime', name: '15hr Quick Start (One-Time Fee)' },
-            'impl-full': { price: 5000, listPrice: 5000, type: 'onetime', name: 'Full Implementation (One-Time Fee)', customPricing: true },
-            'impl-amplify': { price: 10000, listPrice: 10000, type: 'onetime', name: 'Amplify Implementation (One-Time Fee)', customPricing: true }
+            'engage': { price: 120, listPrice: 120, type: 'monthly', name: 'Outreach Platform: Engage', section: 'outreach' },
+            'admin': { price: 120, listPrice: 120, type: 'monthly', name: 'Outreach Admin', section: 'outreach' },
+            'meet': { price: 60, listPrice: 60, type: 'monthly', name: 'Outreach Meet', section: 'outreach' },
+            'deal': { price: 25, listPrice: 25, type: 'monthly', name: 'Outreach Deal', section: 'outreach' },
+            'forecast': { price: 25, listPrice: 25, type: 'monthly', name: 'Outreach Forecast', section: 'outreach' },
+            'amplify': { price: 1.20, listPrice: 1.20, type: 'onetime', name: 'Outreach Amplify (Credits)', defaultSeats: 10000, section: 'outreach' },
+            'listener': { price: 10, listPrice: 10, type: 'monthly', name: 'Listener Licenses', section: 'outreach' },
+            'one-time-discount': { price: 0, listPrice: 0, type: 'onetime', name: 'One-time Discount', isDiscount: true, section: 'outreach' },
+            'voice-standard': { price: 10, listPrice: 10, type: 'monthly', name: 'USA & Canada Standard', section: 'voice' },
+            'voice-premium': { price: 20, listPrice: 20, type: 'monthly', name: 'USA & Canada Premium', section: 'voice' },
+            'voice-europe': { price: 25, listPrice: 25, type: 'monthly', name: 'Europe Full Standard', section: 'voice' },
+            'voice-global': { price: 300, listPrice: 300, type: 'monthly', name: 'Global Calling Package', section: 'voice' },
+            'voice-local': { price: 150, listPrice: 150, type: 'monthly', name: 'Local Presence USA & Canada', section: 'voice' },
+            'impl-10hr': { price: 2000, listPrice: 2000, type: 'onetime', name: '10hr Quick Start (One-Time Fee)', section: 'implementation' },
+            'impl-15hr': { price: 3600, listPrice: 3600, type: 'onetime', name: '15hr Quick Start (One-Time Fee)', section: 'implementation' },
+            'impl-full': { price: 5000, listPrice: 5000, type: 'onetime', name: 'Full Implementation (One-Time Fee)', section: 'implementation' },
+            'impl-amplify': { price: 10000, listPrice: 10000, type: 'onetime', name: 'Amplify Implementation (One-Time Fee)', section: 'implementation' },
+            'managed-services': { price: 5000, listPrice: 5000, type: 'onetime', name: 'Managed Services (One-Time Fee)', isManaged: true, section: 'implementation' },
+            'custom-outreach': { price: 100, listPrice: 100, priceYearly: 1200, listPriceYearly: 1200, type: 'monthly', name: 'Custom SKU', isCustom: true, section: 'outreach' },
+            'custom-voice': { price: 15, listPrice: 15, priceYearly: 180, listPriceYearly: 180, type: 'monthly', name: 'Custom Voice SKU', isCustom: true, section: 'voice' },
+            'custom-implementation': { price: 3000, listPrice: 3000, type: 'onetime', name: 'Custom Implementation SKU', isCustom: true, section: 'implementation' }
         };
 
         let contractMonths = 12;
@@ -665,6 +745,7 @@
         let currentMode = 'edit';
         let showDiscounts = true;
         let showSavings = true;
+        let productCounter = 0;
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventListeners();
@@ -687,9 +768,8 @@
             // Auto-add products when selected
             document.querySelectorAll('.dropdown').forEach(dropdown => {
                 dropdown.addEventListener('change', function() {
-                    if (this.value && !addedProducts.has(this.value)) {
+                    if (this.value) {
                         addProductRow(this.value);
-                        addedProducts.add(this.value);
                         this.value = '';
                         updateEmptyState();
                         calculateTotals();
@@ -845,28 +925,31 @@
                 emptyState.remove();
             }
 
+            productCounter++;
+            const uniqueId = `${productKey}-${productCounter}`;
+
             const row = document.createElement('div');
             row.className = 'product-row edit-mode';
-            row.dataset.product = productKey;
+            row.dataset.product = uniqueId;
+            row.dataset.baseProduct = productKey;
 
-            if (productKey.startsWith('voice-')) {
+            // Set background based on section
+            if (product.section === 'voice') {
                 row.classList.add('voice-row');
-            } else if (productKey.startsWith('impl-')) {
+            } else if (product.section === 'implementation' || productKey === 'managed-services') {
                 row.classList.add('implementation-row');
             } else if (productKey === 'one-time-discount') {
                 row.classList.add('discount-row');
             }
+            // Outreach SKUs (including custom) get no special background class (white)
 
-            const maxSeats = (productKey === 'voice-global' || productKey === 'voice-local' || productKey.startsWith('impl-') || productKey === 'one-time-discount') ? 1 : 999;
             const defaultSeats = product.defaultSeats || 1;
-
             let rowHTML;
             
             if (productKey === 'one-time-discount') {
-                // One-time discount uses same grid but hides irrelevant cells
                 rowHTML = `
                     <div class="product-name">
-                        <button class="remove-btn" onclick="removeProduct('${productKey}')" title="Remove product">×</button>
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
                         ${product.name}
                     </div>
                     <div class="hidden-cell">-</div>
@@ -877,8 +960,22 @@
                         <div class="price-display-static" style="display: none;">$0.00</div>
                     </div>
                 `;
-            } else {
-                const priceCell = product.customPricing ? `
+            } else if (productKey === 'managed-services') {
+                rowHTML = `
+                    <div class="product-name">
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
+                        <div class="managed-services-input">
+                            <input type="text" class="managed-services-prefix" value="" placeholder="6 months">
+                            <span>Managed Services (One-Time Fee)</span>
+                        </div>
+                        <div class="product-name-display" style="display: none;"></div>
+                    </div>
+                    <div class="seat-cell">-</div>
+                    <div class="price-cell">-</div>
+                    <div class="discount-column discount-cell">
+                        <input type="text" class="input-field discount-input" value="0">
+                        <div class="discount-display" style="display: none;">0%</div>
+                    </div>
                     <div class="price-cell">
                         <div class="custom-pricing-container" style="display: block;">
                             <div class="custom-pricing-row">
@@ -890,25 +987,141 @@
                                 <input type="text" class="input-field price-input" value="${product.price}">
                             </div>
                         </div>
-                        <div class="price-display-static" style="display: none;">$${product.price.toFixed(2)}</div>
-                    </div>
-                ` : `
-                    <div class="price-cell">
-                        <input type="text" class="input-field price-input" value="${product.price}">
-                        <div class="price-display-static" style="display: none;">$${product.price.toFixed(2)}</div>
+                        <div class="price-display total-price" style="display: none;">$0.00</div>
                     </div>
                 `;
-
+            } else if (productKey === 'amplify') {
+                // Amplify shows credits and price per credit, but treated as one-time cost
                 rowHTML = `
                     <div class="product-name">
-                        <button class="remove-btn" onclick="removeProduct('${productKey}')" title="Remove product">×</button>
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
                         ${product.name}
                     </div>
                     <div class="seat-cell">
                         <input type="text" class="input-field seats-input" value="${defaultSeats}">
                         <div class="seats-display" style="display: none;">${defaultSeats}</div>
                     </div>
-                    ${priceCell}
+                    <div class="price-cell">
+                        <input type="text" class="input-field price-input" value="${product.price}">
+                        <div class="price-display-static" style="display: none;">$${product.price.toFixed(2)}/credit</div>
+                    </div>
+                    <div class="discount-column discount-cell">
+                        <input type="text" class="input-field discount-input" value="0">
+                        <div class="discount-display" style="display: none;">0%</div>
+                    </div>
+                    <div class="price-display total-price">$0.00</div>
+                `;
+            } else if (product.section === 'implementation') {
+                // All implementation items get List/Price fields in final Price column, show dashes for seats and price/month
+                rowHTML = `
+                    <div class="product-name">
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
+                        ${product.name}
+                    </div>
+                    <div class="seat-cell">-</div>
+                    <div class="price-cell">-</div>
+                    <div class="discount-column discount-cell">
+                        <input type="text" class="input-field discount-input" value="0">
+                        <div class="discount-display" style="display: none;">0%</div>
+                    </div>
+                    <div class="price-cell">
+                        <div class="custom-pricing-container" style="display: block;">
+                            <div class="custom-pricing-row">
+                                <label>List:</label>
+                                <input type="text" class="input-field list-price-input" value="${product.listPrice}">
+                            </div>
+                            <div class="custom-pricing-row">
+                                <label>Price:</label>
+                                <input type="text" class="input-field price-input" value="${product.price}">
+                            </div>
+                        </div>
+                        <div class="price-display total-price" style="display: none;">$0.00</div>
+                    </div>
+                `;
+            } else if (product.isCustom && (product.section === 'outreach' || product.section === 'voice')) {
+                // Custom SKUs for recurring sections get dual pricing
+                rowHTML = `
+                    <div class="product-name">
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
+                        <input type="text" class="product-name-editable" value="${product.name}" placeholder="Enter product name">
+                        <div class="product-name-display" style="display: none;">${product.name}</div>
+                    </div>
+                    <div class="seat-cell">
+                        <input type="text" class="input-field seats-input" value="${defaultSeats}">
+                        <div class="seats-display" style="display: none;">${defaultSeats}</div>
+                    </div>
+                    <div class="price-cell">
+                        <div class="dual-pricing-container" style="display: block;">
+                            <div class="dual-pricing-section">
+                                <div class="dual-pricing-header">Monthly</div>
+                                <div class="dual-pricing-fields">
+                                    <label>L:</label>
+                                    <input type="text" class="input-field list-price-monthly-input" value="${product.listPrice}">
+                                    <label>P:</label>
+                                    <input type="text" class="input-field price-monthly-input" value="${product.price}">
+                                </div>
+                            </div>
+                            <div class="dual-pricing-section">
+                                <div class="dual-pricing-header">Yearly</div>
+                                <div class="dual-pricing-fields">
+                                    <label>L:</label>
+                                    <input type="text" class="input-field list-price-yearly-input" value="${product.listPriceYearly}">
+                                    <label>P:</label>
+                                    <input type="text" class="input-field price-yearly-input" value="${product.priceYearly}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="price-display-static" style="display: none;">$${product.price.toFixed(2)}</div>
+                    </div>
+                    <div class="discount-column discount-cell">
+                        <input type="text" class="input-field discount-input" value="0">
+                        <div class="discount-display" style="display: none;">0%</div>
+                    </div>
+                    <div class="price-display total-price">$0.00</div>
+                `;
+            } else if (product.isCustom) {
+                // Custom implementation SKUs get single pricing in final Price column
+                rowHTML = `
+                    <div class="product-name">
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
+                        <input type="text" class="product-name-editable" value="${product.name}" placeholder="Enter product name">
+                        <div class="product-name-display" style="display: none;">${product.name}</div>
+                    </div>
+                    <div class="seat-cell">-</div>
+                    <div class="price-cell">-</div>
+                    <div class="discount-column discount-cell">
+                        <input type="text" class="input-field discount-input" value="0">
+                        <div class="discount-display" style="display: none;">0%</div>
+                    </div>
+                    <div class="price-cell">
+                        <div class="custom-pricing-container" style="display: block;">
+                            <div class="custom-pricing-row">
+                                <label>List:</label>
+                                <input type="text" class="input-field list-price-input" value="${product.listPrice}">
+                            </div>
+                            <div class="custom-pricing-row">
+                                <label>Price:</label>
+                                <input type="text" class="input-field price-input" value="${product.price}">
+                            </div>
+                        </div>
+                        <div class="price-display total-price" style="display: none;">$0.00</div>
+                    </div>
+                `;
+            } else {
+                // Regular products (Outreach and Voice)
+                rowHTML = `
+                    <div class="product-name">
+                        <button class="remove-btn" onclick="removeProduct('${uniqueId}')" title="Remove product">×</button>
+                        ${product.name}
+                    </div>
+                    <div class="seat-cell">
+                        <input type="text" class="input-field seats-input" value="${defaultSeats}">
+                        <div class="seats-display" style="display: none;">${defaultSeats}</div>
+                    </div>
+                    <div class="price-cell">
+                        <input type="text" class="input-field price-input" value="${product.price}">
+                        <div class="price-display-static" style="display: none;">$${product.price.toFixed(2)}</div>
+                    </div>
                     <div class="discount-column discount-cell">
                         <input type="text" class="input-field discount-input" value="0">
                         <div class="discount-display" style="display: none;">0%</div>
@@ -926,6 +1139,14 @@
             const priceInput = row.querySelector('.price-input');
             const listPriceInput = row.querySelector('.list-price-input');
             const discountPriceInput = row.querySelector('.discount-price-input');
+            const productNameInput = row.querySelector('.product-name-editable');
+            const managedPrefix = row.querySelector('.managed-services-prefix');
+            
+            // Dual pricing inputs
+            const priceMonthlyInput = row.querySelector('.price-monthly-input');
+            const listPriceMonthlyInput = row.querySelector('.list-price-monthly-input');
+            const priceYearlyInput = row.querySelector('.price-yearly-input');
+            const listPriceYearlyInput = row.querySelector('.list-price-yearly-input');
 
             if (seatsInput) {
                 seatsInput.addEventListener('input', () => {
@@ -936,13 +1157,22 @@
             
             if (discountInput) {
                 discountInput.addEventListener('input', function() {
-                    // Allow decimal input by not constraining the value
                     const discount = parseFloat(this.value) || 0;
                     
                     if (priceInput) {
                         const listPrice = listPriceInput ? parseFloat(listPriceInput.value) || 0 : products[productKey].listPrice;
                         const newPrice = listPrice * (1 - Math.min(100, Math.max(0, discount)) / 100);
                         priceInput.value = newPrice.toFixed(2);
+                    } else if (priceYearlyInput && listPriceYearlyInput) {
+                        // For dual pricing, apply discount to yearly
+                        const listPrice = parseFloat(listPriceYearlyInput.value) || 0;
+                        const newPrice = listPrice * (1 - Math.min(100, Math.max(0, discount)) / 100);
+                        priceYearlyInput.value = newPrice.toFixed(2);
+                        
+                        // Update monthly to match
+                        if (priceMonthlyInput) {
+                            priceMonthlyInput.value = (newPrice / 12).toFixed(2);
+                        }
                     }
                     
                     updateDisplays(row);
@@ -963,6 +1193,51 @@
                         }
                     }
                     
+                    updateDisplays(row);
+                    calculateTotals();
+                });
+            }
+
+            // Dual pricing event listeners
+            if (priceMonthlyInput) {
+                priceMonthlyInput.addEventListener('input', function() {
+                    const monthlyPrice = parseFloat(this.value) || 0;
+                    if (priceYearlyInput) {
+                        priceYearlyInput.value = (monthlyPrice * 12).toFixed(2);
+                    }
+                    updateDisplays(row);
+                    calculateTotals();
+                });
+            }
+
+            if (listPriceMonthlyInput) {
+                listPriceMonthlyInput.addEventListener('input', function() {
+                    const monthlyListPrice = parseFloat(this.value) || 0;
+                    if (listPriceYearlyInput) {
+                        listPriceYearlyInput.value = (monthlyListPrice * 12).toFixed(2);
+                    }
+                    updateDisplays(row);
+                    calculateTotals();
+                });
+            }
+
+            if (priceYearlyInput) {
+                priceYearlyInput.addEventListener('input', function() {
+                    const yearlyPrice = parseFloat(this.value) || 0;
+                    if (priceMonthlyInput) {
+                        priceMonthlyInput.value = (yearlyPrice / 12).toFixed(2);
+                    }
+                    updateDisplays(row);
+                    calculateTotals();
+                });
+            }
+
+            if (listPriceYearlyInput) {
+                listPriceYearlyInput.addEventListener('input', function() {
+                    const yearlyListPrice = parseFloat(this.value) || 0;
+                    if (listPriceMonthlyInput) {
+                        listPriceMonthlyInput.value = (yearlyListPrice / 12).toFixed(2);
+                    }
                     updateDisplays(row);
                     calculateTotals();
                 });
@@ -989,13 +1264,25 @@
                 });
             }
 
+            if (productNameInput) {
+                productNameInput.addEventListener('input', function() {
+                    updateDisplays(row);
+                });
+            }
+
+            if (managedPrefix) {
+                managedPrefix.addEventListener('input', function() {
+                    updateDisplays(row);
+                });
+            }
+
             updateDisplays(row);
             updateTableLayout();
             calculateTotals();
         }
 
         function updateDisplays(row) {
-            const productKey = row.dataset.product;
+            const productKey = row.dataset.baseProduct;
             
             if (productKey === 'one-time-discount') {
                 const discountPriceInput = row.querySelector('.discount-price-input');
@@ -1019,25 +1306,53 @@
             const discountInput = row.querySelector('.discount-input');
             const listPriceInput = row.querySelector('.list-price-input');
             const customPricingContainer = row.querySelector('.custom-pricing-container');
+            const dualPricingContainer = row.querySelector('.dual-pricing-container');
+            const productNameInput = row.querySelector('.product-name-editable');
+            const managedPrefix = row.querySelector('.managed-services-prefix');
+            const managedInput = row.querySelector('.managed-services-input');
             
             const seatsDisplay = row.querySelector('.seats-display');
             const priceDisplayStatic = row.querySelector('.price-display-static');
             const discountDisplay = row.querySelector('.discount-display');
-
-            if (!priceInput || !discountInput) return;
+            const productNameDisplay = row.querySelector('.product-name-display');
 
             const seats = seatsInput ? parseInt(seatsInput.value) || 0 : 1;
-            const currentPrice = parseFloat(priceInput.value) || 0;
-            const discount = parseFloat(discountInput.value) || 0;
-            const listPrice = listPriceInput ? parseFloat(listPriceInput.value) || 0 : product.listPrice;
+            const discount = parseFloat(discountInput?.value) || 0;
+
+            // Get the appropriate price for display
+            let currentPrice, listPrice;
+            if (dualPricingContainer) {
+                // For dual pricing, use monthly price for display
+                const priceMonthlyInput = row.querySelector('.price-monthly-input');
+                const listPriceMonthlyInput = row.querySelector('.list-price-monthly-input');
+                currentPrice = parseFloat(priceMonthlyInput?.value) || 0;
+                listPrice = parseFloat(listPriceMonthlyInput?.value) || 0;
+            } else {
+                currentPrice = parseFloat(priceInput?.value) || 0;
+                listPrice = listPriceInput ? parseFloat(listPriceInput.value) || 0 : (product?.listPrice || 0);
+            }
 
             // Update static displays
-            if (seatsDisplay) seatsDisplay.textContent = seats;
+            if (seatsDisplay) {
+                seatsDisplay.textContent = seats;
+            }
             if (discountDisplay) discountDisplay.textContent = discount + '%';
+
+            // Update product name display for custom and managed services
+            if (productNameDisplay && productNameInput) {
+                productNameDisplay.textContent = productNameInput.value;
+            } else if (productNameDisplay && managedPrefix) {
+                const prefix = managedPrefix.value.trim();
+                productNameDisplay.textContent = prefix ? `${prefix} Managed Services (One-Time Fee)` : 'Managed Services (One-Time Fee)';
+            }
 
             // Update price display with left-aligned styling for presentation mode
             if (priceDisplayStatic) {
-                if (currentMode !== 'edit' && currentPrice < listPrice) {
+                if (productKey === 'amplify') {
+                    if (currentMode !== 'edit') {
+                        priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">$${currentPrice.toFixed(2)}/credit</div>`;
+                    }
+                } else if (currentMode !== 'edit' && currentPrice < listPrice) {
                     priceDisplayStatic.innerHTML = `
                         <div style="text-align: left;">
                             <div class="original-price">$${listPrice.toFixed(2)}</div>
@@ -1055,17 +1370,27 @@
                 if (priceInput) priceInput.style.display = 'block';
                 if (discountInput) discountInput.style.display = 'block';
                 if (customPricingContainer) customPricingContainer.style.display = 'block';
+                if (dualPricingContainer) dualPricingContainer.style.display = 'block';
+                if (productNameInput) productNameInput.style.display = 'block';
+                if (managedPrefix) managedPrefix.style.display = 'inline-block';
+                if (managedInput) managedInput.style.display = 'flex';
                 if (seatsDisplay) seatsDisplay.style.display = 'none';
                 if (priceDisplayStatic) priceDisplayStatic.style.display = 'none';
                 if (discountDisplay) discountDisplay.style.display = 'none';
+                if (productNameDisplay) productNameDisplay.style.display = 'none';
             } else {
                 if (seatsInput) seatsInput.style.display = 'none';
                 if (priceInput) priceInput.style.display = 'none';
                 if (discountInput) discountInput.style.display = 'none';
                 if (customPricingContainer) customPricingContainer.style.display = 'none';
+                if (dualPricingContainer) dualPricingContainer.style.display = 'none';
+                if (productNameInput) productNameInput.style.display = 'none';
+                if (managedPrefix) managedPrefix.style.display = 'none';
+                if (managedInput) managedInput.style.display = 'none';
                 if (seatsDisplay) seatsDisplay.style.display = 'block';
                 if (priceDisplayStatic) priceDisplayStatic.style.display = 'block';
                 if (discountDisplay) discountDisplay.style.display = 'block';
+                if (productNameDisplay) productNameDisplay.style.display = 'block';
             }
         }
 
@@ -1077,11 +1402,10 @@
             });
         }
 
-        function removeProduct(productKey) {
-            const row = document.querySelector(`[data-product="${productKey}"]`);
-            if (row && productKey !== 'support') {
+        function removeProduct(productId) {
+            const row = document.querySelector(`[data-product="${productId}"]`);
+            if (row && productId !== 'support') {
                 row.remove();
-                addedProducts.delete(productKey);
                 updateEmptyState();
                 calculateTotals();
             }
@@ -1104,8 +1428,9 @@
             let oneTimeDiscounts = 0;
 
             document.querySelectorAll('.product-row[data-product]').forEach(row => {
-                const productKey = row.dataset.product;
-                if (productKey === 'support') return;
+                const productId = row.dataset.product;
+                const productKey = row.dataset.baseProduct;
+                if (productId === 'support') return;
                 
                 if (productKey === 'one-time-discount') {
                     const discountPriceInput = row.querySelector('.discount-price-input');
@@ -1117,32 +1442,49 @@
                 }
 
                 const seatsInput = row.querySelector('.seats-input');
-                const priceInput = row.querySelector('.price-input');
-                const listPriceInput = row.querySelector('.list-price-input');
                 const totalPriceDiv = row.querySelector('.total-price');
+                const product = products[productKey];
 
-                if (!priceInput || !totalPriceDiv) return;
+                if (!totalPriceDiv) return;
 
                 const seats = seatsInput ? parseInt(seatsInput.value) || 0 : 1;
-                const currentPrice = parseFloat(priceInput.value) || 0;
-                const product = products[productKey];
-                const listPrice = listPriceInput ? parseFloat(listPriceInput.value) || 0 : product.listPrice;
                 
                 if (!product || (seatsInput && seats === 0)) {
                     totalPriceDiv.innerHTML = '$0.00';
                     return;
                 }
-                
-                let originalTotal, discountedTotal;
-                if (product.type === 'monthly') {
-                    originalTotal = listPrice * seats * 12;
-                    discountedTotal = currentPrice * seats * 12;
-                } else {
+
+                let currentPrice, listPrice, originalTotal, discountedTotal;
+
+                // Get pricing based on SKU type
+                const dualPricingContainer = row.querySelector('.dual-pricing-container');
+                if (dualPricingContainer) {
+                    // For dual pricing custom SKUs, use yearly values for calculation
+                    const priceYearlyInput = row.querySelector('.price-yearly-input');
+                    const listPriceYearlyInput = row.querySelector('.list-price-yearly-input');
+                    currentPrice = parseFloat(priceYearlyInput?.value) || 0;
+                    listPrice = parseFloat(listPriceYearlyInput?.value) || 0;
+                    
                     originalTotal = listPrice * seats;
                     discountedTotal = currentPrice * seats;
+                } else {
+                    // Regular SKUs
+                    const priceInput = row.querySelector('.price-input');
+                    const listPriceInput = row.querySelector('.list-price-input');
+                    currentPrice = parseFloat(priceInput?.value) || 0;
+                    listPrice = listPriceInput ? parseFloat(listPriceInput.value) || 0 : product.listPrice;
+
+                    if (product.type === 'monthly' && productKey !== 'amplify') {
+                        originalTotal = listPrice * seats * 12;
+                        discountedTotal = currentPrice * seats * 12;
+                    } else {
+                        originalTotal = listPrice * seats;
+                        discountedTotal = currentPrice * seats;
+                    }
                 }
 
-                // Show crossed out price if discounted - left aligned for presentation
+                // ALWAYS UPDATE the total price display for each line item
+                totalPriceDiv.style.display = 'block';
                 if (currentPrice < listPrice) {
                     totalPriceDiv.innerHTML = `
                         <div style="text-align: left;">
@@ -1154,12 +1496,13 @@
                     totalPriceDiv.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(discountedTotal).toLocaleString()}</div>`;
                 }
 
-                if (product.type === 'monthly') {
-                    monthlyRecurring += discountedTotal;
-                    originalMonthlyRecurring += originalTotal;
-                } else {
+                // Categorize for totals: Amplify and Implementation = one-time, everything else = recurring
+                if (productKey === 'amplify' || product.section === 'implementation') {
                     oneTimeTotal += discountedTotal;
                     originalOneTimeTotal += originalTotal;
+                } else {
+                    monthlyRecurring += discountedTotal;
+                    originalMonthlyRecurring += originalTotal;
                 }
             });
 
@@ -1183,8 +1526,8 @@
             const totalSavingsEl = document.getElementById('totalSavings');
             const termSavingsRow = document.getElementById('termSavingsRow');
             
-            if (annualSavingsEl) annualSavingsEl.textContent = `$${annualRecurringSavings.toLocaleString()}`;
-            if (totalSavingsEl) totalSavingsEl.textContent = `$${totalTermSavings.toLocaleString()}`;
+            if (annualSavingsEl) annualSavingsEl.textContent = `${annualRecurringSavings.toLocaleString()}`;
+            if (totalSavingsEl) totalSavingsEl.textContent = `${totalTermSavings.toLocaleString()}`;
             
             // ALWAYS show the term savings row
             if (termSavingsRow) {
@@ -1197,12 +1540,12 @@
             const totalEl = document.getElementById(totalId);
             
             if (undiscountedEl) {
-                undiscountedEl.textContent = `$${originalAmount.toLocaleString()}`;
+                undiscountedEl.textContent = `${originalAmount.toLocaleString()}`;
                 undiscountedEl.style.display = originalAmount > discountedAmount ? 'block' : 'none';
             }
             
             if (totalEl) {
-                totalEl.textContent = `$${discountedAmount.toLocaleString()}`;
+                totalEl.textContent = `${discountedAmount.toLocaleString()}`;
             }
         }
 
