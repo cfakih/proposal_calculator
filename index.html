@@ -1526,8 +1526,8 @@
             const totalSavingsEl = document.getElementById('totalSavings');
             const termSavingsRow = document.getElementById('termSavingsRow');
             
-            if (annualSavingsEl) annualSavingsEl.textContent = `${annualRecurringSavings.toFixed(0)}`;
-            if (totalSavingsEl) totalSavingsEl.textContent = `${totalTermSavings.toFixed(0)}`;
+            if (annualSavingsEl) annualSavingsEl.textContent = `$${annualRecurringSavings.toLocaleString()}`;
+            if (totalSavingsEl) totalSavingsEl.textContent = `$${totalTermSavings.toLocaleString()}`;
             
             // ALWAYS show the term savings row
             if (termSavingsRow) {
@@ -1540,12 +1540,12 @@
             const totalEl = document.getElementById(totalId);
             
             if (undiscountedEl) {
-                undiscountedEl.textContent = `${originalAmount.toFixed(0)}`;
+                undiscountedEl.textContent = `$${originalAmount.toLocaleString()}`;
                 undiscountedEl.style.display = originalAmount > discountedAmount ? 'block' : 'none';
             }
             
             if (totalEl) {
-                totalEl.textContent = `${discountedAmount.toFixed(0)}`;
+                totalEl.textContent = `$${discountedAmount.toLocaleString()}`;
             }
         }
 
