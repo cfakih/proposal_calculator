@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1290,7 +1291,7 @@
                 
                 if (currentMode !== 'edit' && discountPriceInput && priceDisplayStatic) {
                     const value = parseFloat(discountPriceInput.value) || 0;
-                    priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(value).toFixed(0)}</div>`;
+                    priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(value).toLocaleString()}</div>`;
                     discountPriceInput.style.display = 'none';
                     priceDisplayStatic.style.display = 'block';
                 } else if (discountPriceInput && priceDisplayStatic) {
@@ -1488,12 +1489,12 @@
                 if (currentPrice < listPrice) {
                     totalPriceDiv.innerHTML = `
                         <div style="text-align: left;">
-                            <div class="original-price">$${originalTotal.toFixed(0)}</div>
-                            <div class="discounted-price">$${discountedTotal.toFixed(0)}</div>
+                            <div class="original-price">$${originalTotal.toLocaleString()}</div>
+                            <div class="discounted-price">$${discountedTotal.toLocaleString()}</div>
                         </div>
                     `;
                 } else {
-                    totalPriceDiv.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(discountedTotal).toFixed(0)}</div>`;
+                    totalPriceDiv.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(discountedTotal).toLocaleString()}</div>`;
                 }
 
                 // Categorize for totals: Amplify and Implementation = one-time, everything else = recurring
@@ -1526,8 +1527,8 @@
             const totalSavingsEl = document.getElementById('totalSavings');
             const termSavingsRow = document.getElementById('termSavingsRow');
             
-            if (annualSavingsEl) annualSavingsEl.textContent = `$${annualRecurringSavings.toLocaleString()}`;
-            if (totalSavingsEl) totalSavingsEl.textContent = `$${totalTermSavings.toLocaleString()}`;
+            if (annualSavingsEl) annualSavingsEl.textContent = `${annualRecurringSavings.toLocaleString()}`;
+            if (totalSavingsEl) totalSavingsEl.textContent = `${totalTermSavings.toLocaleString()}`;
             
             // ALWAYS show the term savings row
             if (termSavingsRow) {
@@ -1540,12 +1541,12 @@
             const totalEl = document.getElementById(totalId);
             
             if (undiscountedEl) {
-                undiscountedEl.textContent = `$${originalAmount.toLocaleString()}`;
+                undiscountedEl.textContent = `${originalAmount.toLocaleString()}`;
                 undiscountedEl.style.display = originalAmount > discountedAmount ? 'block' : 'none';
             }
             
             if (totalEl) {
-                totalEl.textContent = `$${discountedAmount.toLocaleString()}`;
+                totalEl.textContent = `${discountedAmount.toLocaleString()}`;
             }
         }
 
