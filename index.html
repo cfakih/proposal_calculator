@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -748,6 +747,11 @@
         let showSavings = true;
         let productCounter = 0;
 
+        // Helper function to format currency
+        function formatCurrency(amount) {
+            return '$' + Math.abs(amount).toLocaleString();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventListeners();
             calculateTotals();
@@ -1291,7 +1295,7 @@
                 
                 if (currentMode !== 'edit' && discountPriceInput && priceDisplayStatic) {
                     const value = parseFloat(discountPriceInput.value) || 0;
-                    priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(value).toLocaleString()}</div>`;
+                    priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">${formatCurrency(value)}</div>`;
                     discountPriceInput.style.display = 'none';
                     priceDisplayStatic.style.display = 'block';
                 } else if (discountPriceInput && priceDisplayStatic) {
@@ -1335,7 +1339,7 @@
 
             // Update static displays
             if (seatsDisplay) {
-                seatsDisplay.textContent = seats;
+                seatsDisplay.textContent = seats.toLocaleString();
             }
             if (discountDisplay) discountDisplay.textContent = discount + '%';
 
@@ -1351,17 +1355,17 @@
             if (priceDisplayStatic) {
                 if (productKey === 'amplify') {
                     if (currentMode !== 'edit') {
-                        priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">$${currentPrice.toFixed(2)}/credit</div>`;
+                        priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">${formatCurrency(currentPrice)}/credit</div>`;
                     }
                 } else if (currentMode !== 'edit' && currentPrice < listPrice) {
                     priceDisplayStatic.innerHTML = `
                         <div style="text-align: left;">
-                            <div class="original-price">$${listPrice.toFixed(2)}</div>
-                            <div class="discounted-price">$${currentPrice.toFixed(2)}</div>
+                            <div class="original-price">${formatCurrency(listPrice)}</div>
+                            <div class="discounted-price">${formatCurrency(currentPrice)}</div>
                         </div>
                     `;
                 } else if (currentMode !== 'edit') {
-                    priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">$${currentPrice.toFixed(2)}</div>`;
+                    priceDisplayStatic.innerHTML = `<div style="text-align: left; font-weight: 600;">${formatCurrency(currentPrice)}</div>`;
                 }
             }
 
@@ -1451,7 +1455,7 @@
                 const seats = seatsInput ? parseInt(seatsInput.value) || 0 : 1;
                 
                 if (!product || (seatsInput && seats === 0)) {
-                    totalPriceDiv.innerHTML = '$0.00';
+                    totalPriceDiv.innerHTML = formatCurrency(0);
                     return;
                 }
 
@@ -1489,12 +1493,12 @@
                 if (currentPrice < listPrice) {
                     totalPriceDiv.innerHTML = `
                         <div style="text-align: left;">
-                            <div class="original-price">$${originalTotal.toLocaleString()}</div>
-                            <div class="discounted-price">$${discountedTotal.toLocaleString()}</div>
+                            <div class="original-price">${formatCurrency(originalTotal)}</div>
+                            <div class="discounted-price">${formatCurrency(discountedTotal)}</div>
                         </div>
                     `;
                 } else {
-                    totalPriceDiv.innerHTML = `<div style="text-align: left; font-weight: 600;">$${Math.abs(discountedTotal).toLocaleString()}</div>`;
+                    totalPriceDiv.innerHTML = `<div style="text-align: left; font-weight: 600;">${formatCurrency(discountedTotal)}</div>`;
                 }
 
                 // Categorize for totals: Amplify and Implementation = one-time, everything else = recurring
@@ -1519,7 +1523,7 @@
             const implementationSavings = (originalOneTimeTotal - oneTimeTotal) + oneTimeDiscounts;
             const totalTermSavings = (annualRecurringSavings * contractMonths / 12) + implementationSavings;
 
-            // Update displays
+            // Update displays with proper currency formatting
             updateTotalDisplay('firstYearUndiscounted', 'firstYearTotal', originalFirstYearTotal, firstYearTotal);
             updateTotalDisplay('recurringUndiscounted', 'recurringTotal', originalAnnualRecurring, annualRecurring);
             
@@ -1527,8 +1531,8 @@
             const totalSavingsEl = document.getElementById('totalSavings');
             const termSavingsRow = document.getElementById('termSavingsRow');
             
-            if (annualSavingsEl) annualSavingsEl.textContent = `${annualRecurringSavings.toLocaleString()}`;
-            if (totalSavingsEl) totalSavingsEl.textContent = `${totalTermSavings.toLocaleString()}`;
+            if (annualSavingsEl) annualSavingsEl.textContent = formatCurrency(annualRecurringSavings);
+            if (totalSavingsEl) totalSavingsEl.textContent = formatCurrency(totalTermSavings);
             
             // ALWAYS show the term savings row
             if (termSavingsRow) {
@@ -1541,12 +1545,12 @@
             const totalEl = document.getElementById(totalId);
             
             if (undiscountedEl) {
-                undiscountedEl.textContent = `${originalAmount.toLocaleString()}`;
+                undiscountedEl.textContent = formatCurrency(originalAmount);
                 undiscountedEl.style.display = originalAmount > discountedAmount ? 'block' : 'none';
             }
             
             if (totalEl) {
-                totalEl.textContent = `${discountedAmount.toLocaleString()}`;
+                totalEl.textContent = formatCurrency(discountedAmount);
             }
         }
 
