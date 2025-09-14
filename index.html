@@ -912,8 +912,8 @@
                 allowTaint: false,
                 logging: false,
                 scale: 2, // High DPI for crisp output
-                width: exportContainer.scrollWidth,
-                height: exportContainer.scrollHeight
+                width: Math.max(exportContainer.scrollWidth, exportContainer.offsetWidth + 100),
+                height: Math.max(exportContainer.scrollHeight, exportContainer.offsetHeight + 50)
             };
 
             html2canvas(exportContainer, options).then(canvas => {
