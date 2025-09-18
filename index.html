@@ -1390,6 +1390,18 @@
                 const prefix = managedPrefix.value.trim();
                 productNameDisplay.textContent = prefix ? `${prefix} Managed Services (One-Time Fee)` : 'Managed Services (One-Time Fee)';
             }
+            
+            // Handle product name editing for all custom SKUs including implementation
+            if (productNameInput && currentMode === 'edit') {
+                productNameInput.style.display = 'block';
+                if (productNameDisplay) productNameDisplay.style.display = 'none';
+            } else if (productNameInput && currentMode !== 'edit') {
+                productNameInput.style.display = 'none';
+                if (productNameDisplay) {
+                    productNameDisplay.style.display = 'block';
+                    productNameDisplay.textContent = productNameInput.value || product.name;
+                }
+            }
 
             // Update price display with left-aligned styling for presentation mode
             if (priceDisplayStatic) {
