@@ -1058,7 +1058,7 @@
                     </div>
                     <div class="price-display total-price">$0.00</div>
                 `;
-            } else if (product.section === 'implementation') {
+            } else if (product.section === 'implementation' && !product.isCustom) {
                 // All implementation items get List/Price fields in final Price column, show dashes for seats and price/month
                 rowHTML = `
                     <div class="product-name">
@@ -1126,7 +1126,7 @@
                     </div>
                     <div class="price-display total-price">$0.00</div>
                 `;
-            } else if (product.isCustom) {
+            } else if (product.isCustom && product.section === 'implementation') {
                 // Custom implementation SKUs get single pricing in final Price column
                 rowHTML = `
                     <div class="product-name">
